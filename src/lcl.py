@@ -7,11 +7,9 @@ class LCLGraph(Graph):
         super().__init__(jobs, edges)
         self.successors = [0] * self.num_jobs
 
-        # Successors initialization using existing adjacency matrix
-        for src in range(self.num_jobs):
-            for dst in range(self.num_jobs):
-                if self.adj_matrix[src][dst]:
-                    self.successors[src] += 1
+        # Successors initialization using edges
+        for src, _ in self.edges:
+            self.successors[src] += 1
 
         # Find jobs with no successors (L)
         self.L = set([i for i in range(self.num_jobs) if self.successors[i] == 0])

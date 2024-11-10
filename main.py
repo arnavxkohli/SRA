@@ -1,4 +1,5 @@
 from src.lcl import LCLGraph
+from src.tabu import TabuGraph
 from src.job import Job
 
 
@@ -25,6 +26,12 @@ def main():
 
     lcl_graph = LCLGraph(jobs, edges)
     lcl_graph.schedule_jobs()
+
+    initial_schedule = [
+        29, 28, 22, 9, 8, 13, 12, 11, 3, 19, 21, 2, 26, 27, 7,
+        6, 18, 20, 25, 17, 24, 16, 14, 5, 23, 15, 4, 10, 1, 0,
+        30
+    ]
 
 
 if __name__ == "__main__":

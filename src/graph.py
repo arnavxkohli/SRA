@@ -5,6 +5,7 @@ class Graph:
     def __init__(self, jobs: list[Job], edges: list[tuple[int, int]]):
         self.jobs = jobs
         self.num_jobs = len(jobs)
+        self.edges = edges
 
         # Adjacency matrix initialization
         self.adj_matrix = [[0] * self.num_jobs for _ in range(self.num_jobs)]
