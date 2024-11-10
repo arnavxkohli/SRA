@@ -1,62 +1,54 @@
-from src.job import Job
-from src.graph import Graph
 from collections import deque
-
+from src.graph import Graph
+from src.job import Job
 
 class TabuGraph(Graph):
-    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]],
-                 list_length: int, max_iterations: int,
-                 initial_schedule: list[int]):
-        super().__init__(jobs, edges)
+    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]], schedule: list[int]):
+        super().__init__(jobs, edges, schedule)
 
-        self.schedule = initial_schedule
-        self.max_iterations = max_iterations
-
-        # Queue automatically flushed once the maximum length is reached
-        self.tabu_list = deque(maxlen=list_length)
-
-    def __calculate_tardiness_sum(self) -> int:
+    def __calculate_tardiness_sum(self, schedule: list[int]) -> int:
         '''
-        Calculate the tardiness sum for the current schedule.
+        Calculate the tardiness sum for a given schedule.
 
-        return: int
+        Parameters:
+        - schedule (list[int]): Job order to evaluate
+
+        Returns:
+        - int: The total tardiness for the given schedule
         '''
         completion_time = 0
         tardiness = 0
-        for job in self.schedule:
+        for job in schedule:
             completion_time += job.processing_time
             tardiness += max(0, completion_time - job.due_date)
         return tardiness
 
     def __check_valid_swap(self, schedule_index: int) -> bool:
         '''
-        Check if a swap of the jobs at adjacent indices is valid:
-        - The swap does not violate the precedence constraints between these
-        two jobs.
-        - The swap (unordered) is not in the tabu list.
+        Check if a swap of jobs at adjacent indices is valid (does not violate precedence constraints embedded in the)
+        DAG.
 
-        schedule_index: int
+        Parameters:
+        - schedule_index (int): Index of the job in the schedule to check for a valid swap with the next job
 
-        return: bool
+        Returns:
+        - bool: True if swap is valid; False otherwise
         '''
         prev_job, next_job = self.schedule[schedule_index], self.schedule[schedule_index + 1]
 
+        # Check for precedence violation
         if self.adj_matrix[next_job][prev_job]:
-                raise ValueError("Current schedule violates precedence constraints")
-
-        # Pair needs to be unordered - confirm this!
-        if tuple(sorted([prev_job, next_job])) in self.tabu_list:
+            print(f"Invalid schedule: {prev_job} should precede {next_job}. Schedule: {self.schedule}")
             return False
 
-        # If the left job is a direct predecessor of the right job, the swap would cause
-        # the right job to now be scheduled before the left job, violating the precedence
         return not self.adj_matrix[prev_job][next_job]
 
     def validate_schedule(self) -> bool:
         '''
-        Utility function to check if the current schedule is valid.
+        Validates the current schedule against precedence constraints.
 
-        return: bool
+        Returns:
+        - bool: True if schedule is valid; False otherwise
         '''
         for src in range(self.num_jobs):
             for dst in range(self.num_jobs):
@@ -64,5 +56,49 @@ class TabuGraph(Graph):
                     return False
         return True
 
-    def schedule_jobs(self):
-        return super().schedule_jobs()
+    def schedule_jobs(self, list_length: int, max_iterations: int, tolerance: int):
+        '''
+        Tabu search minimizing tardiness sum.
+
+        Parameters:
+        - list_length (int): Max length of tabu list
+        - max_iterations (int): Max number of iterations for the search
+        - tolerance (int): Tolerance level for accepting worse solutions
+
+        Updates:
+        - self.schedule: Updates to the best-found schedule.
+        '''
+        tabu_list = deque(maxlen=list_length)
+        x_schedule = self.schedule.copy()
+        lowest_cost = self.__calculate_tardiness_sum(x_schedule)
+        current_cost = lowest_cost
+
+        for _ in range(max_iterations):
+            found_neighbour = False
+            schedule_index = 0
+
+            while not found_neighbour and schedule_index < self.num_jobs - 1:
+                if self.__check_valid_swap(schedule_index):
+                    y_schedule = x_schedule.copy()
+                    y_schedule[schedule_index], y_schedule[schedule_index + 1] = y_schedule[schedule_index + 1], y_schedule[schedule_index]
+                    y_cost = self.__calculate_tardiness_sum(y_schedule)
+                    delta = current_cost - y_cost
+
+                    # Accept if:
+                    # 1. Improves on best-known solution (aspiration criterion)
+                    # 2. OR: Not tabu and within tolerance
+                    swap_pair = tuple(sorted([x_schedule[schedule_index], x_schedule[schedule_index + 1]]))
+                    if y_cost < lowest_cost or (delta > -tolerance and swap_pair not in tabu_list):
+                        current_cost, x_schedule = y_cost, y_schedule.copy()
+                        found_neighbour = True
+
+                if not found_neighbour:
+                    schedule_index += 1
+
+            if not found_neighbour:
+                return
+
+            # Update tabu list and best-known solution if improved
+            tabu_list.append(tuple(sorted([x_schedule[schedule_index], x_schedule[schedule_index + 1]])))
+            if current_cost < lowest_cost:
+                lowest_cost, self.schedule = current_cost, x_schedule.copy()

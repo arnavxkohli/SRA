@@ -4,6 +4,17 @@ from src.graph import Graph
 
 class LCLGraph(Graph):
     def __init__(self, jobs: list[Job], edges: list[tuple[int, int]]):
+        '''
+        Initialize LCL graph for job scheduling.
+
+        Parameters:
+        - jobs (list[Job]): List of jobs to schedule
+        - edges (list[tuple[int, int]]): List of precedence relationships between jobs
+
+        Updates:
+        - self.successors: Count of successors for each job
+        - self.L: Set of jobs with no successors
+        '''
         super().__init__(jobs, edges)
         self.successors = [0] * self.num_jobs
 
@@ -16,12 +27,13 @@ class LCLGraph(Graph):
 
     def __find_next_job(self, completion_time: int) -> int:
         '''
-        Given a completion time, find the next job to schedule based on the
-        minimum tardiness among jobs that are ready to be scheduled.
+        Find next job to schedule based on minimum tardiness among available jobs.
 
-        completion_time: int
+        Parameters:
+        - completion_time (int): Current completion time to evaluate tardiness
 
-        return: int
+        Returns:
+        - int: Index of job with minimum tardiness from available jobs
         '''
         min_tardiness = float("inf")
         next_job = None
@@ -37,12 +49,15 @@ class LCLGraph(Graph):
 
     def schedule_jobs(self):
         '''
-        Perform the Least Cost Last (LCL) scheduling algorithm to schedule the
-        jobs.
+        Perform Least Cost Last (LCL) scheduling algorithm.
 
-        At each iteration find the set of jobs that have no successors
-        and can be scheduled next based on the minimum tardiness. Minimizes
-        the global tardiness.
+        Algorithm schedules jobs backwards starting with jobs that have no successors,
+        selecting at each step the job with minimum tardiness. Aims to minimize
+        total tardiness while respecting precedence constraints.
+
+        Updates:
+        - self.schedule: Fills with optimal job order
+        - Completion times for each job
         '''
         # Initial total completion time
         completion_time = sum(job.processing_time for job in self.jobs)

@@ -2,7 +2,7 @@ from src.job import Job
 
 
 class Graph:
-    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]]):
+    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]], schedule: list[int] | None = None):
         self.jobs = jobs
         self.num_jobs = len(jobs)
         self.edges = edges
@@ -14,7 +14,10 @@ class Graph:
         for src, dst in edges:
             self.adj_matrix[src][dst] = 1
 
-        self.schedule = []
+        if schedule is None:
+            self.schedule = []
+        else:
+            self.schedule = schedule
 
     def schedule_jobs(self):
         raise NotImplementedError
