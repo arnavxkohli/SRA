@@ -10,15 +10,6 @@ class TabuGraph(Graph):
         super().__init__(jobs, edges)
 
         self.schedule = initial_schedule
-
-        # Initialize the predecessors and successors
-        self.predecessors = [[] for _ in range(self.num_jobs)]
-        self.successors = [[] for _ in range(self.num_jobs)]
-
-        for src, dst in self.edges:
-            self.successors[src].append(dst)
-            self.predecessors[dst].append(src)
-
         self.max_iterations = max_iterations
 
         # Queue automatically flushed once the maximum length is reached
@@ -37,43 +28,40 @@ class TabuGraph(Graph):
             tardiness += max(0, completion_time - job.due_date)
         return tardiness
 
-    def __check_valid_swap(self, left_index: int, right_index: int) -> bool:
+    def __check_valid_swap(self, schedule_index: int) -> bool:
         '''
-        Check if a swap of the jobs at given indices if the schedule is valid:
-        - The swap does not violate the precedence constraints.
+        Check if a swap of the jobs at adjacent indices is valid:
+        - The swap does not violate the precedence constraints between these
+        two jobs.
         - The swap (unordered) is not in the tabu list.
 
-        left_index: int
-        right_index: int
+        schedule_index: int
 
         return: bool
-
-        Under this convention, left_index and right_index are the indices within
-        the schedule of the jobs meant to be swapped. left_job and right_job
-        are the indices of jobs derived from the Job object on creation (within
-        the adjacency matrix).
         '''
-        position_map = {job: i for i, job in enumerate(self.schedule)}
-        left_job, right_job = self.schedule[left_index], self.schedule[right_index]
+        prev_job, next_job = self.schedule[schedule_index], self.schedule[schedule_index + 1]
+
+        if self.adj_matrix[next_job][prev_job]:
+                raise ValueError("Current schedule violates precedence constraints")
 
         # Pair needs to be unordered - confirm this!
-        if tuple(sorted([left_job, right_job])) in self.tabu_list:
+        if tuple(sorted([prev_job, next_job])) in self.tabu_list:
             return False
 
-        # Simulate the swap
-        position_map[left_job], position_map[right_job] = position_map[right_job], position_map[left_job]
+        # If the left job is a direct predecessor of the right job, the swap would cause
+        # the right job to now be scheduled before the left job, violating the precedence
+        return not self.adj_matrix[prev_job][next_job]
 
-        for job in (left_job, right_job):
-            # Check all predecessors of this job
-            for predecessor in self.predecessors[job]:
-                if position_map[predecessor] > position_map[job]:
+    def validate_schedule(self) -> bool:
+        '''
+        Utility function to check if the current schedule is valid.
+
+        return: bool
+        '''
+        for src in range(self.num_jobs):
+            for dst in range(self.num_jobs):
+                if self.adj_matrix[src][dst] and self.schedule.index(src) > self.schedule.index(dst):
                     return False
-
-            # Check all successors of this job
-            for successor in self.successors[job]:
-                if position_map[successor] < position_map[job]:
-                    return False
-
         return True
 
     def schedule_jobs(self):
