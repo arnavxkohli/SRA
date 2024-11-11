@@ -18,7 +18,7 @@ class TabuGraph(Graph):
         '''
         completion_time = 0
         tardiness = 0
-        for job in schedule:
+        for job in map(lambda job_index: self.jobs[job_index], schedule):
             completion_time += job.processing_time
             tardiness += max(0, completion_time - job.due_date)
         return tardiness
@@ -71,7 +71,7 @@ class TabuGraph(Graph):
         tabu_list = deque(maxlen=list_length)
         x_schedule = self.schedule.copy()
         lowest_cost = self.__calculate_tardiness_sum(x_schedule)
-        current_cost = lowest_cost
+        x_cost = lowest_cost
 
         for _ in range(max_iterations):
             found_neighbour = False
@@ -82,14 +82,14 @@ class TabuGraph(Graph):
                     y_schedule = x_schedule.copy()
                     y_schedule[schedule_index], y_schedule[schedule_index + 1] = y_schedule[schedule_index + 1], y_schedule[schedule_index]
                     y_cost = self.__calculate_tardiness_sum(y_schedule)
-                    delta = current_cost - y_cost
+                    delta = x_cost - y_cost
 
                     # Accept if:
                     # 1. Improves on best-known solution (aspiration criterion)
                     # 2. OR: Not tabu and within tolerance
                     swap_pair = tuple(sorted([x_schedule[schedule_index], x_schedule[schedule_index + 1]]))
                     if y_cost < lowest_cost or (delta > -tolerance and swap_pair not in tabu_list):
-                        current_cost, x_schedule = y_cost, y_schedule.copy()
+                        x_cost, x_schedule = y_cost, y_schedule.copy()
                         found_neighbour = True
 
                 if not found_neighbour:
@@ -100,5 +100,5 @@ class TabuGraph(Graph):
 
             # Update tabu list and best-known solution if improved
             tabu_list.append(tuple(sorted([x_schedule[schedule_index], x_schedule[schedule_index + 1]])))
-            if current_cost < lowest_cost:
-                lowest_cost, self.schedule = current_cost, x_schedule.copy()
+            if x_cost < lowest_cost:
+                lowest_cost, self.schedule = x_cost, x_schedule.copy()

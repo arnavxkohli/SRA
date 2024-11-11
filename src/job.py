@@ -19,13 +19,17 @@ class Job:
         Job._index_counter += 1
         return Job._index_counter - 1
 
-    def tardiness(self, completion_time: int) -> int:
+    def tardiness(self, completion_time: int | None=None) -> int:
         '''
         Calculate the tardiness of a job given its completion time.
 
         return: int
         '''
-        return max(0, completion_time - self.due_date)
+        if self.completion_time is None:
+            if completion_time is None:
+                raise ValueError("Job has no completion time, and is not complete yet")
+            return max(0, completion_time - self.due_date)
+        return max(0, self.completion_time - self.due_date)
 
     def __repr__(self):
         if self.completion_time is None:
