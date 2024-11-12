@@ -2,10 +2,11 @@ class Job:
     # 1-index the jobs for visualization
     _index_counter = 1
 
-    def __init__(self, processing_time: int, due_date: int):
+    def __init__(self, processing_time: int, due_date: int, weight: int = 1):
         self.index = Job.assign_index()
         self.processing_time = processing_time
         self.due_date = due_date
+        self.weight = weight
         self.completion_time = None
 
     @staticmethod

@@ -2,9 +2,15 @@ from src.job import Job
 
 
 class Graph:
-    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]], schedule: list[int] | None = None):
-        self.jobs = jobs
-        self.num_jobs = len(jobs)
+    def __init__(self, processing_times: list[int], due_dates: list[int],
+                 edges: list[tuple[int, int]],
+                 schedule: list[int] | None = None,
+                 weights: list[int] | None=None):
+        self.jobs = [Job(p, d) for p, d in zip(processing_times, due_dates)]
+        if weights is not None:
+            for i, weight in enumerate(weights):
+                self.jobs[i].weight = weight
+        self.num_jobs = len(self.jobs)
         self.edges = edges
 
         # Adjacency matrix initialization

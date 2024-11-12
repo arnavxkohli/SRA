@@ -3,7 +3,9 @@ from src.graph import Graph
 
 
 class LCLGraph(Graph):
-    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]]):
+    def __init__(self, processing_times: list[int], due_dates: list[int],
+                 edges: list[tuple[int, int]],
+                 weights: list[int] | None = None):
         '''
         Initialize LCL graph for job scheduling.
 
@@ -15,7 +17,8 @@ class LCLGraph(Graph):
         - self.successors: Count of successors for each job
         - self.L: Set of jobs with no successors
         '''
-        super().__init__(jobs, edges)
+        super().__init__(processing_times=processing_times,
+                         due_dates=due_dates, edges=edges, weights=weights)
         self.successors = [0] * self.num_jobs
 
         # Successors initialization using edges

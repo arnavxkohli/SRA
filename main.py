@@ -22,10 +22,12 @@ def main():
         (29, 13), (29, 19), (29, 22), (29, 28)
     ]
 
-    jobs = [Job(processing_time=p, due_date=d) for p, d in zip(processing_times, due_dates)]
-
-    lcl_graph = LCLGraph(jobs, edges)
+    lcl_graph = LCLGraph(processing_times=processing_times,
+                         due_dates=due_dates, edges=edges)
     lcl_graph.schedule_jobs()
+
+    for job_index in lcl_graph.schedule:
+        print(lcl_graph.jobs[job_index])
 
     initial_schedule = [
         29, 28, 22, 9, 8, 13, 12, 11, 3, 19, 21, 2, 26, 27, 7,

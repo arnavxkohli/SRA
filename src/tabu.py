@@ -3,8 +3,12 @@ from src.graph import Graph
 from src.job import Job
 
 class TabuGraph(Graph):
-    def __init__(self, jobs: list[Job], edges: list[tuple[int, int]], schedule: list[int]):
-        super().__init__(jobs, edges, schedule)
+    def __init__(self, processing_times: list[int], due_dates: list[int],
+                 edges: list[tuple[int, int]], schedule: list[int],
+                 weights: list[int] | None=None):
+        super().__init__(processing_times=processing_times,
+                         due_dates=due_dates, edges=edges, schedule=schedule,
+                         weights=weights)
 
     def __calculate_tardiness_sum(self, schedule: list[int]) -> int:
         '''
