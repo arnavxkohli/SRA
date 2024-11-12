@@ -3,7 +3,7 @@ from src.job import Job
 
 class Graph:
     def __init__(self, processing_times: list[int], due_dates: list[int],
-                 edges: list[tuple[int, int]],
+                 precedences: list[tuple[int, int]],
                  schedule: list[int] | None = None,
                  weights: list[int] | None=None):
         self.jobs = [Job(p, d) for p, d in zip(processing_times, due_dates)]
@@ -11,13 +11,13 @@ class Graph:
             for i, weight in enumerate(weights):
                 self.jobs[i].weight = weight
         self.num_jobs = len(self.jobs)
-        self.edges = edges
+        self.precedences = precedences
 
         # Adjacency matrix initialization
         self.adj_matrix = [[0] * self.num_jobs for _ in range(self.num_jobs)]
 
         # Build the adjacency matrix and track successors
-        for src, dst in edges:
+        for src, dst in precedences:
             self.adj_matrix[src][dst] = 1
 
         if schedule is None:
