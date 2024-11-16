@@ -31,15 +31,43 @@ def main():
                          due_dates=due_dates,
                          precedences=precedences)
 
-    with TabuGraph(processing_times=processing_times,
-                   due_dates=due_dates,
-                   precedences=precedences,
-                   schedule=initial_schedule,
-                   log_file_path="out/tabu_schedule.txt") as tabu_graph:
+    tabu_simulation = [
+        {
+            "log_file_path": "out/tabu_1.txt",
+            "list_length": 20,
+            "max_iterations": 10,
+            "tolerance": 100
+        },
+        {
+            "log_file_path": "out/tabu_2.txt",
+            "list_length": 20,
+            "max_iterations": 100,
+            "tolerance": 100
+        },
+        {
+            "log_file_path": "out/tabu_3.txt",
+            "list_length": 20,
+            "max_iterations": 1000,
+            "tolerance": 100
+        },
+        {
+            "log_file_path": "out/tabu_best_schedule.txt",
+            "list_length": 100,
+            "max_iterations": 10000,
+            "tolerance": 100
+        },
+    ]
 
-        tabu_graph.schedule_jobs(list_length=200,
-                                 max_iterations=100000,
-                                 tolerance=100)
+    for simulation in tabu_simulation:
+        with TabuGraph(processing_times=processing_times,
+                       due_dates=due_dates,
+                       precedences=precedences,
+                       schedule=initial_schedule,
+                       log_file_path=simulation["log_file_path"]) as tabu_graph:
+
+            tabu_graph.schedule_jobs(list_length=simulation["list_length"],
+                                     max_iterations=simulation["max_iterations"],
+                                     tolerance=simulation["tolerance"])
 
 if __name__ == "__main__":
     main()

@@ -17,6 +17,8 @@ class TabuGraph(Graph):
                          schedule=schedule,
                          weights=weights,
                          log_file_path=log_file_path)
+        if self.log_file:
+            self.log_file.write(f"Tabu search initialized with schedule: {[s+1 for s in schedule]}\n")
 
     def __calculate_tardiness_sum(self, schedule: list[int]) -> int:
         completion_time, tardiness = 0, 0
@@ -45,6 +47,10 @@ class TabuGraph(Graph):
 
     def schedule_jobs(self, list_length: int, max_iterations: int,
                       tolerance: int) -> None:
+        if self.log_file:
+            self.log_file.write(f"List Length: {list_length}, Iterations: {max_iterations}, Tolerance: {tolerance}\n\n")
+
+        # Basic setup
         tabu_list = deque(maxlen=list_length)
         best_schedule = self.schedule.copy()
         best_tardiness = self.__calculate_tardiness_sum(best_schedule)
@@ -53,21 +59,29 @@ class TabuGraph(Graph):
         previous_interchange = None
 
         for iteration in range(max_iterations):
+            aspiration_criteria_met = False
+
+            # Based on previous interchange, get rotated interchange array
             interchanges = self.get_interchanges(previous_interchange)
             swap_pair = None
 
+            # Check all possible interchanges
             for i, j in interchanges:
                 if self.__is_valid_swap(current_schedule, i, j):
                     new_schedule = current_schedule.copy()
                     new_schedule[i], new_schedule[j] = new_schedule[j], new_schedule[i]
                     new_tardiness = self.__calculate_tardiness_sum(new_schedule)
-                    swap_pair = tuple(sorted([current_schedule[i], current_schedule[j]]))
-                    if (current_tardiness - new_tardiness > -tolerance and swap_pair not in tabu_list) or new_tardiness < best_tardiness:
+                    swap_pair = tuple(sorted([new_schedule[i], new_schedule[j]]))
+                    aspiration_criteria_met = new_tardiness < best_tardiness
+
+                    # If within tolerance and not in tabu, or aspiration criteria met
+                    if (current_tardiness - new_tardiness > -tolerance and swap_pair not in tabu_list) or aspiration_criteria_met:
                         current_tardiness = new_tardiness
                         current_schedule = new_schedule.copy()
                         previous_interchange = i
                         break
 
+            # No swaps found, terminate
             if swap_pair is None:
                 text = f"Iteration {iteration + 1}: No interchange found, terminating\n"
                 if self.log_file:
@@ -76,6 +90,7 @@ class TabuGraph(Graph):
                     print(f"No interchange found, terminating at iteration {iteration + 1}")
                 break
 
+            # Update best schedule
             if current_tardiness < best_tardiness:
                 text = f"Iteration {iteration + 1}: New best tardiness: {current_tardiness} with schedule: {[s+1 for s in current_schedule]}\n"
                 if self.log_file:
@@ -85,6 +100,9 @@ class TabuGraph(Graph):
                 best_tardiness = current_tardiness
                 best_schedule = current_schedule.copy()
 
-            tabu_list.append(swap_pair)
+            # Update tabu list, but if the aspiration criterion is met and the
+            # pair is already in the list, we don't need to add it again
+            if not aspiration_criteria_met or swap_pair not in tabu_list:
+                tabu_list.append(swap_pair)
 
         self.schedule = best_schedule
