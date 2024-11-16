@@ -10,16 +10,7 @@ class TabuGraph(Graph):
                          due_dates=due_dates, precedences=precedences,
                          schedule=schedule, weights=weights)
 
-    def __calculate_tardiness_sum(self, schedule: list[int]) -> int:
-        '''
-        Calculate the tardiness sum for a given schedule.
-
-        Parameters:
-        - schedule (list[int]): Job order to evaluate
-
-        Returns:
-        - int: The total tardiness for the given schedule
-        '''
+    def calculate_tardiness_sum(self, schedule: list[int]) -> int:
         completion_time = 0
         tardiness = 0
         for job in map(lambda job_index: self.jobs[job_index], schedule):
@@ -27,87 +18,67 @@ class TabuGraph(Graph):
             tardiness += job.weight * max(0, completion_time - job.due_date)
         return tardiness
 
-    def __check_valid_swap(self, schedule_index: int) -> bool:
-        '''
-        Check if a swap of jobs at adjacent indices is valid (does not violate precedence constraints embedded in the)
-        DAG.
+    def is_valid_swap(self, schedule: list[int], l: int, r: int) -> bool:
+        new_schedule = schedule.copy()
+        new_schedule[l], new_schedule[r] = new_schedule[r], new_schedule[l]
 
-        Parameters:
-        - schedule_index (int): Index of the job in the schedule to check for a valid swap with the next job
-
-        Returns:
-        - bool: True if swap is valid; False otherwise
-        '''
-        prev_job, next_job = self.schedule[schedule_index], self.schedule[schedule_index + 1]
-
-        # Check for precedence violation
-        if self.adj_matrix[next_job][prev_job]:
-            print(f"Invalid schedule: {prev_job} should precede {next_job}. Schedule: {self.schedule}")
-            return False
-
-        return not self.adj_matrix[prev_job][next_job]
-
-    def validate_schedule(self) -> bool:
-        '''
-        Validates the current schedule against precedence constraints.
-
-        Returns:
-        - bool: True if schedule is valid; False otherwise
-        '''
-        for src in range(self.num_jobs):
-            for dst in range(self.num_jobs):
-                if self.adj_matrix[src][dst] and self.schedule.index(src) > self.schedule.index(dst):
-                    return False
+        for src, dst in self.precedences:
+            if new_schedule.index(src) > new_schedule.index(dst):
+                return False
         return True
 
+    def get_neighbors(self, schedule: list[int]) -> list[tuple[list[int], tuple[int, int]]]:
+        neighbors = []
+        for l in range(self.num_jobs - 1):
+            for r in range(l + 1, self.num_jobs):
+                if self.is_valid_swap(schedule, l, r):
+                    new_schedule = schedule.copy()
+                    new_schedule[l], new_schedule[r] = new_schedule[l], new_schedule[r]
+                    swap_pair = tuple(sorted([schedule[l], schedule[r]]))
+                    neighbors.append((new_schedule, swap_pair))
+        return neighbors
+
     def schedule_jobs(self, list_length: int, max_iterations: int, tolerance: int):
-        '''
-        Tabu search minimizing tardiness sum.
-
-        Parameters:
-        - list_length (int): Max length of tabu list
-        - max_iterations (int): Max number of iterations for the search
-        - tolerance (int): Tolerance level for accepting worse solutions
-
-        Updates:
-        - self.schedule: Updates to the best-found schedule.
-        '''
         tabu_list = deque(maxlen=list_length)
-        x_schedule = self.schedule.copy()
-        lowest_cost = self.__calculate_tardiness_sum(x_schedule)
-        x_cost = lowest_cost
+        current_schedule = self.schedule.copy()
+        current_cost = self.calculate_tardiness_sum(current_schedule)
+        best_schedule = current_schedule.copy()
+        best_cost = current_cost
 
-        for iteration in map(lambda i: i+1, range(max_iterations)):
-            best_y_schedule = None
-            best_y_cost = float('inf')
-            best_swap_pair = None
+        for iteration in range(max_iterations):
+            neighbors = self.get_neighbors(current_schedule)
+            if not neighbors:
+                print(f"Terminating at iteration {iteration}, no valid neighbors found.")
+                break
 
-            # Check all neighbours to find best possible valid swap at this point, greedy approach
-            for schedule_index in range(self.num_jobs - 1):
-                if self.__check_valid_swap(schedule_index):
-                    # Confirm if this is a pair which can be swapped in this iteration
-                    swap_pair = tuple(sorted([x_schedule[schedule_index], x_schedule[schedule_index + 1]]))
-                    if swap_pair in tabu_list:
-                        continue
-                    y_schedule = x_schedule.copy()
-                    y_schedule[schedule_index], y_schedule[schedule_index + 1] = y_schedule[schedule_index + 1], y_schedule[schedule_index]
-                    y_cost = self.__calculate_tardiness_sum(y_schedule)
+            # Find best non-tabu neighbor or neighbor that beats best known solution
+            best_neighbor = None
+            best_neighbor_cost = float('inf')
+            best_swap = None
 
-                    # If improvement over best cost this iteration, update best cost, schedule and swap pair
-                    if y_cost < best_y_cost:
-                        best_y_cost, best_y_schedule = y_cost, y_schedule.copy()
-                        best_swap_pair = swap_pair
+            for neighbor_schedule, swap_pair in neighbors:
+                cost = self.calculate_tardiness_sum(neighbor_schedule)
 
-            if best_y_schedule:
-                delta = x_cost - best_y_cost
-                if best_y_cost < lowest_cost or (delta > -tolerance and best_swap_pair not in tabu_list):
-                    x_cost, x_schedule = best_y_cost, best_y_schedule.copy()
-            else:
-                print(f"Terminating at iteration {iteration}, no valid swaps found.")
-                return
+                # Accept if not tabu or if better than best known
+                if swap_pair not in tabu_list or cost < best_cost:
+                    # Accept moves within tolerance
+                    if cost <= current_cost + tolerance and cost < best_neighbor_cost:
+                        best_neighbor = neighbor_schedule
+                        best_neighbor_cost = cost
+                        best_swap = swap_pair
 
-            # Update tabu list and best-known solution if improved
-            tabu_list.append(best_swap_pair)
-            if x_cost < lowest_cost:
-                print(f"New best solution found at iteration {iteration}: {x_cost} for schedule: {x_schedule}")
-                lowest_cost, self.schedule = x_cost, x_schedule.copy()
+            if best_neighbor is None:
+                print(f"Terminating at iteration {iteration}, no improving moves found.")
+                break
+
+            # Update current solution
+            current_schedule = best_neighbor
+            current_cost = best_neighbor_cost
+            tabu_list.append(best_swap)
+
+            # Update best solution if improved
+            if current_cost < best_cost:
+                print(f"New best solution found at iteration {iteration+1}: {current_cost} with schedule {current_schedule}")
+                best_cost = current_cost
+                best_schedule = current_schedule.copy()
+                self.schedule = best_schedule.copy()

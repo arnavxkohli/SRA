@@ -21,20 +21,21 @@ def main():
         (29, 13), (29, 19), (29, 22), (29, 28)
     ]
 
-    lcl_graph = LCLGraph(processing_times=processing_times,
-                         due_dates=due_dates, precedences=precedences)
-
     initial_schedule = [
         29, 28, 22, 9, 8, 13, 12, 11, 3, 19, 21, 2, 26, 27, 7,
         6, 18, 20, 25, 17, 24, 16, 14, 5, 23, 15, 4, 10, 1, 0,
         30
     ]
 
+    lcl_graph = LCLGraph(processing_times=processing_times,
+                         due_dates=due_dates, precedences=precedences)
+
     tabu_graph = TabuGraph(processing_times=processing_times,
                            due_dates=due_dates,
                            precedences=precedences,
                            schedule=initial_schedule)
 
+    schedule, cost = tabu_graph.schedule_jobs(list_length=10, max_iterations=1000, tolerance=10)
 
 if __name__ == "__main__":
     main()
