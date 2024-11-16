@@ -28,14 +28,16 @@ def main():
     ]
 
     lcl_graph = LCLGraph(processing_times=processing_times,
-                         due_dates=due_dates, precedences=precedences)
+                         due_dates=due_dates,
+                         precedences=precedences)
 
     tabu_graph = TabuGraph(processing_times=processing_times,
                            due_dates=due_dates,
                            precedences=precedences,
-                           schedule=initial_schedule)
+                           schedule=initial_schedule,
+                           aggressive=True)
 
-    schedule, cost = tabu_graph.schedule_jobs(list_length=10, max_iterations=1000, tolerance=10)
+    tabu_graph.schedule_jobs(list_length=20, max_iterations=1000, tolerance=100)
 
 if __name__ == "__main__":
     main()
