@@ -31,12 +31,15 @@ def main():
                          due_dates=due_dates,
                          precedences=precedences)
 
-    tabu_graph = TabuGraph(processing_times=processing_times,
-                           due_dates=due_dates,
-                           precedences=precedences,
-                           schedule=initial_schedule)
+    with TabuGraph(processing_times=processing_times,
+                   due_dates=due_dates,
+                   precedences=precedences,
+                   schedule=initial_schedule,
+                   log_file_path="out/tabu_schedule.txt") as tabu_graph:
 
-    tabu_graph.schedule_jobs(list_length=200, max_iterations=100000, tolerance=100)
+        tabu_graph.schedule_jobs(list_length=200,
+                                 max_iterations=100000,
+                                 tolerance=100)
 
 if __name__ == "__main__":
     main()
