@@ -36,25 +36,25 @@ def main():
             "log_file_path": "out/tabu_1.txt",
             "list_length": 20,
             "max_iterations": 10,
-            "tolerance": 100
+            "tolerance": 10
         },
         {
             "log_file_path": "out/tabu_2.txt",
             "list_length": 20,
             "max_iterations": 100,
-            "tolerance": 100
+            "tolerance": 10
         },
         {
             "log_file_path": "out/tabu_3.txt",
             "list_length": 20,
             "max_iterations": 1000,
-            "tolerance": 100
+            "tolerance": 10
         },
         {
             "log_file_path": "out/tabu_best_schedule.txt",
             "list_length": 100,
             "max_iterations": 10000,
-            "tolerance": 100
+            "tolerance": 20
         },
     ]
 

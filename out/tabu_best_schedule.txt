@@ -1,5 +1,5 @@
 Tabu search initialized with schedule: [30, 29, 23, 10, 9, 14, 13, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
-List Length: 100, Iterations: 10000, Tolerance: 100
+List Length: 100, Iterations: 10000, Tolerance: 20
 
 Iteration 10: New best tardiness: 335 with schedule: [30, 23, 10, 9, 14, 13, 12, 4, 20, 22, 3, 29, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
 Iteration 15: New best tardiness: 333 with schedule: [30, 23, 10, 9, 14, 13, 12, 4, 20, 22, 3, 29, 28, 8, 7, 19, 21, 27, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
