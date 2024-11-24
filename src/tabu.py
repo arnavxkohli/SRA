@@ -90,7 +90,7 @@ class TabuGraph(Graph):
                 if self.log_file:
                     self.log_file.write(text)
                 else:
-                    print(f"No interchange found, terminating at iteration {iteration + 1}")
+                    print(text)
                 break
 
             # Update best schedule

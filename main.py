@@ -1,8 +1,11 @@
 from src.lcl import LCLGraph
 from src.tabu import TabuGraph
+from src.parser import parse_args
 
 
 def main():
+    args = parse_args()
+
     processing_times = [
         3, 10, 2, 2, 5, 2, 14, 5, 6, 5, 5, 2, 3, 3, 5, 6, 6, 6, 2, 3, 2, 3, 14, 5, 18,
         10, 2, 3, 6, 2, 10
@@ -29,48 +32,22 @@ def main():
 
     intermediate_iterations = [0, 1, 4, 6, 10, 14, 18, 22, 26, 29]
 
-    tabu_simulation = [
-        {
-            "log_file_path": "out/tabu_1.txt",
-            "list_length": 20,
-            "max_iterations": 10,
-            "tolerance": 10
-        },
-        {
-            "log_file_path": "out/tabu_2.txt",
-            "list_length": 20,
-            "max_iterations": 100,
-            "tolerance": 10
-        },
-        {
-            "log_file_path": "out/tabu_3.txt",
-            "list_length": 20,
-            "max_iterations": 1000,
-            "tolerance": 10
-        },
-        {
-            "log_file_path": "out/tabu_best_schedule.txt",
-            "list_length": 100,
-            "max_iterations": 10000,
-            "tolerance": 20
-        },
-    ]
+    if args.run in ['lcl', 'both']:
+        with LCLGraph(processing_times=processing_times,
+                      due_dates=due_dates,
+                      precedences=precedences,
+                      log_file_path="out/lcl_schedule.txt" if args.save_output else None) as lcl_graph:
+            lcl_graph.schedule_jobs(intermediate_iterations=intermediate_iterations)
 
-    with LCLGraph(processing_times=processing_times,
-                  due_dates=due_dates,
-                  precedences=precedences,
-                  log_file_path="out/lcl_schedule.txt") as lcl_graph:
-        lcl_graph.schedule_jobs(intermediate_iterations=intermediate_iterations)
-
-    for simulation in tabu_simulation:
+    if args.run in ['tabu', 'both']:
         with TabuGraph(processing_times=processing_times,
                        due_dates=due_dates,
                        precedences=precedences,
                        schedule=initial_schedule,
-                       log_file_path=simulation["log_file_path"]) as tabu_graph:
-            tabu_graph.schedule_jobs(list_length=simulation["list_length"],
-                                     max_iterations=simulation["max_iterations"],
-                                     tolerance=simulation["tolerance"])
+                       log_file_path="out/tabu_schedule.txt" if args.save_output else None) as tabu_graph:
+            tabu_graph.schedule_jobs(list_length=args.list_length,
+                                     max_iterations=args.max_iterations,
+                                     tolerance=args.tolerance)
 
 if __name__ == "__main__":
     main()
