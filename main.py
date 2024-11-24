@@ -44,11 +44,12 @@ def main():
         with TabuGraph(processing_times=processing_times,
                        due_dates=due_dates,
                        precedences=precedences,
-                       schedule=initial_schedule,
+                       schedule=initial_schedule if not args.no_initial_schedule else None,
                        log_file_path="out/tabu_schedule.txt" if args.save_output else None) as tabu_graph:
             tabu_graph.schedule_jobs(list_length=args.list_length,
                                      max_iterations=args.max_iterations,
                                      tolerance=args.tolerance)
+
 
 if __name__ == "__main__":
     main()

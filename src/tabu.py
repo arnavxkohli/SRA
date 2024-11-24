@@ -8,7 +8,7 @@ class TabuGraph(Graph):
                  processing_times: list[int],
                  due_dates: list[int],
                  precedences: list[tuple[int, int]],
-                 schedule: list[int],
+                 schedule: list[int] | None=None,
                  weights: list[int] | None=None,
                  log_file_path: str | None=None) -> None:
         super().__init__(processing_times=processing_times,
@@ -18,6 +18,9 @@ class TabuGraph(Graph):
                          weights=weights,
                          log_file_path=log_file_path)
         if self.log_file:
+            if schedule is None:
+                schedule = self.generate_initial_schedule()
+                self.schedule = schedule
             self.log_file.write(f"Tabu search initialized with schedule: {[s+1 for s in schedule]}\n")
 
     def __calculate_tardiness_sum(self, schedule: list[int]) -> int:
@@ -27,6 +30,38 @@ class TabuGraph(Graph):
             completion_time += job.processing_time
             tardiness += job.weight * max(0, completion_time - job.due_date)
         return tardiness
+
+    def generate_initial_schedule(self) -> list[int]:
+        # Topological Sort
+        initial_schedule = []
+
+        in_degree = [0] * self.num_jobs
+        for src, dst in self.precedences:
+            in_degree[dst] += 1
+
+        # Start with jobs that have no depdendencies
+        queue = deque([i for i in range(self.num_jobs) if in_degree[i] == 0])
+
+        while queue:
+            current_job = queue.popleft()
+            initial_schedule.append(current_job)
+
+            for src, dst in self.precedences:
+                if src == current_job:
+                    in_degree[dst] -= 1
+                    if in_degree[dst] == 0:
+                        queue.append(dst)
+
+        if len(initial_schedule) != self.num_jobs:
+            raise ValueError("Precedences are cyclic, cannot generate valid initial schedule")
+
+        # Logically shouldn't happen, but just in case
+        if any(initial_schedule.index(src) > initial_schedule.index(dst) for src, dst in self.precedences):
+            raise ValueError("Invalid initial schedule")
+
+        self.schedule = initial_schedule
+
+        return initial_schedule
 
     def __is_valid_swap(self, schedule: list[int], i: int, j: int) -> bool:
         test_schedule = schedule.copy()
@@ -61,9 +96,11 @@ class TabuGraph(Graph):
         for iteration in range(max_iterations):
             aspiration_criteria_met = False
 
+            # Use previous interchange to find the next possible interchanges in cyclic manner
             interchanges = self.get_interchanges(previous_interchange)
             swap_pair = None
 
+            # Find the first valid swap
             for i, j in interchanges:
                 if self.__is_valid_swap(current_schedule, i, j):
                     new_schedule = current_schedule.copy()
@@ -78,6 +115,7 @@ class TabuGraph(Graph):
                         previous_interchange = i
                         break
 
+            # If no valid swap, terminate
             if swap_pair is None:
                 text = f"Iteration {iteration + 1}: No interchange found, terminating\n"
                 if self.log_file:
@@ -86,6 +124,7 @@ class TabuGraph(Graph):
                     print(text)
                 break
 
+            # Update best schedule if necessary
             if current_tardiness < best_tardiness:
                 text = f"Iteration {iteration + 1}: New best tardiness: {current_tardiness} with schedule: {[s+1 for s in current_schedule]}\n"
                 if self.log_file:
@@ -95,6 +134,7 @@ class TabuGraph(Graph):
                 best_tardiness = current_tardiness
                 best_schedule = current_schedule.copy()
 
+            # Update tabu list only if the swap is not already in the list (so that no duplicate entries are made)
             if not aspiration_criteria_met or swap_pair not in tabu_list:
                 tabu_list.append(swap_pair)
 

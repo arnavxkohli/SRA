@@ -3,6 +3,8 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description='Scheduling Coursework CLI')
 
+    parser.add_argument('-n', '--no-initial-schedule', action='store_true', help='Use provided initial schedule if not set')
+
     parser.add_argument('-l', '--list_length', type=int, default=20, help='List length for Tabu search')
     parser.add_argument('-m', '--max_iterations', type=int, default=1000, help='Maximum iterations for Tabu search')
     parser.add_argument('-t', '--tolerance', type=int, default=10, help='Tolerance for Tabu search')
