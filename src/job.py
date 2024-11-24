@@ -11,21 +11,11 @@ class Job:
 
     @staticmethod
     def assign_index():
-        '''
-        Assigns an index to a job and increments the static counter.
-
-        return: int
-        '''
         # For debugging and output representation
         Job._index_counter += 1
         return Job._index_counter - 1
 
     def tardiness(self, completion_time: int | None=None) -> int:
-        '''
-        Calculate the tardiness of a job given its completion time.
-
-        return: int
-        '''
         if self.completion_time is None:
             if completion_time is None:
                 raise ValueError("Job has no completion time, and is not complete yet")

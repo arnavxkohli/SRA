@@ -3,21 +3,11 @@ from src.graph import Graph
 
 
 class LCLGraph(Graph):
+
     def __init__(self, processing_times: list[int], due_dates: list[int],
                  precedences: list[tuple[int, int]],
                  weights: list[int] | None = None,
                  log_file_path: str | None = None) -> None:
-        '''
-        Initialize LCL graph for job scheduling.
-
-        Parameters:
-        - jobs (list[Job]): List of jobs to schedule
-        - precedences (list[tuple[int, int]]): List of precedence relationships between jobs
-
-        Updates:
-        - self.successors: Count of successors for each job
-        - self.L: Set of jobs with no successors
-        '''
         super().__init__(processing_times=processing_times,
                          due_dates=due_dates, precedences=precedences,
                          weights=weights, log_file_path=log_file_path)
@@ -31,16 +21,6 @@ class LCLGraph(Graph):
         self.L = set([i for i in range(self.num_jobs) if self.successors[i] == 0])
 
     def __find_next_job(self, completion_time: int) -> tuple[int, int]:
-        '''
-        Find next job to schedule based on minimum tardiness among available jobs.
-
-        Parameters:
-        - completion_time (int): Current completion time to evaluate tardiness
-
-        Returns:
-        - int: Index of job with minimum tardiness from available jobs
-        - int: Minimum tardiness value
-        '''
         min_tardiness = float("inf")
         next_job = None
 
@@ -54,17 +34,6 @@ class LCLGraph(Graph):
         return next_job, min_tardiness
 
     def schedule_jobs(self, intermediate_iterations: list[int] | None = None) -> None:
-        '''
-        Perform Least Cost Last (LCL) scheduling algorithm.
-
-        Algorithm schedules jobs backwards starting with jobs that have no successors,
-        selecting at each step the job with minimum tardiness. Aims to minimize
-        total tardiness while respecting precedence constraints.
-
-        Updates:
-        - self.schedule: Fills with optimal job order
-        - Completion times for each job
-        '''
         # Initial total completion time
         completion_time = sum(job.processing_time for job in self.jobs)
         iteration = 0
