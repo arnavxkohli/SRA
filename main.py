@@ -2,6 +2,7 @@ from src.lcl import LCLGraph
 from src.tabu import TabuGraph
 from src.parser import parse_args
 
+# Major TODO: Include in your implementation code to generate a valid initial solution (which may not be optimal).
 
 def main():
     args = parse_args()
