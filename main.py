@@ -27,9 +27,7 @@ def main():
         30
     ]
 
-    lcl_graph = LCLGraph(processing_times=processing_times,
-                         due_dates=due_dates,
-                         precedences=precedences)
+    intermediate_iterations = [0, 1, 4, 6, 10, 14, 18, 22, 26, 29]
 
     tabu_simulation = [
         {
@@ -58,13 +56,18 @@ def main():
         },
     ]
 
+    with LCLGraph(processing_times=processing_times,
+                  due_dates=due_dates,
+                  precedences=precedences,
+                  log_file_path="out/lcl_schedule.txt") as lcl_graph:
+        lcl_graph.schedule_jobs(intermediate_iterations=intermediate_iterations)
+
     for simulation in tabu_simulation:
         with TabuGraph(processing_times=processing_times,
                        due_dates=due_dates,
                        precedences=precedences,
                        schedule=initial_schedule,
                        log_file_path=simulation["log_file_path"]) as tabu_graph:
-
             tabu_graph.schedule_jobs(list_length=simulation["list_length"],
                                      max_iterations=simulation["max_iterations"],
                                      tolerance=simulation["tolerance"])

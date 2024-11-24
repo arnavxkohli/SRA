@@ -5,7 +5,8 @@ from src.graph import Graph
 class LCLGraph(Graph):
     def __init__(self, processing_times: list[int], due_dates: list[int],
                  precedences: list[tuple[int, int]],
-                 weights: list[int] | None = None):
+                 weights: list[int] | None = None,
+                 log_file_path: str | None = None) -> None:
         '''
         Initialize LCL graph for job scheduling.
 
@@ -18,7 +19,8 @@ class LCLGraph(Graph):
         - self.L: Set of jobs with no successors
         '''
         super().__init__(processing_times=processing_times,
-                         due_dates=due_dates, precedences=precedences, weights=weights)
+                         due_dates=due_dates, precedences=precedences,
+                         weights=weights, log_file_path=log_file_path)
         self.successors = [0] * self.num_jobs
 
         # Successors initialization using precedences
@@ -28,7 +30,7 @@ class LCLGraph(Graph):
         # Find jobs with no successors (L)
         self.L = set([i for i in range(self.num_jobs) if self.successors[i] == 0])
 
-    def __find_next_job(self, completion_time: int) -> int:
+    def __find_next_job(self, completion_time: int) -> tuple[int, int]:
         '''
         Find next job to schedule based on minimum tardiness among available jobs.
 
@@ -37,6 +39,7 @@ class LCLGraph(Graph):
 
         Returns:
         - int: Index of job with minimum tardiness from available jobs
+        - int: Minimum tardiness value
         '''
         min_tardiness = float("inf")
         next_job = None
@@ -48,9 +51,9 @@ class LCLGraph(Graph):
                 min_tardiness = tardiness
                 next_job = job_index
 
-        return next_job
+        return next_job, min_tardiness
 
-    def schedule_jobs(self):
+    def schedule_jobs(self, intermediate_iterations: list[int] | None = None) -> None:
         '''
         Perform Least Cost Last (LCL) scheduling algorithm.
 
@@ -64,14 +67,23 @@ class LCLGraph(Graph):
         '''
         # Initial total completion time
         completion_time = sum(job.processing_time for job in self.jobs)
+        iteration = 0
+        max_tardiness = 0
 
         while self.L:
-            next_job = self.__find_next_job(completion_time)
+            next_job, min_tardiness = self.__find_next_job(completion_time)
             self.schedule.append(next_job)
 
-            # Update completion time
+            max_tardiness = max(max_tardiness, min_tardiness)
+
+            # Update completion time of selected job and total completion time
             self.jobs[next_job].completion_time = completion_time
             completion_time -= self.jobs[next_job].processing_time
+
+            if self.log_file:
+                self.log_file.write(f"Iteration {iteration}: Job {next_job+1} with tardiness {min_tardiness}\n")
+                if intermediate_iterations and iteration in intermediate_iterations:
+                    self.log_file.write(f"Intermediate schedule: {[s+1 for s in self.schedule[::-1]]}\n\n")
 
             # Update L and successors, add to L if all dependencies are met
             self.L.remove(next_job)
@@ -83,3 +95,6 @@ class LCLGraph(Graph):
 
         # Reverse the schedule to get the correct order
         self.schedule.reverse()
+        if self.log_file:
+            self.log_file.write(f"Final schedule: {[s+1 for s in self.schedule]}\n")
+            self.log_file.write(f"Maximum tardiness: {min_tardiness}\n")

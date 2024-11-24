@@ -1,0 +1,95 @@
+Iteration 0: Job 31 with tardiness 0
+Intermediate schedule: [31]
+
+Iteration 0: Job 1 with tardiness 0
+Intermediate schedule: [1, 31]
+
+Iteration 0: Job 11 with tardiness 0
+Intermediate schedule: [11, 1, 31]
+
+Iteration 0: Job 15 with tardiness 0
+Intermediate schedule: [15, 11, 1, 31]
+
+Iteration 0: Job 2 with tardiness 65
+Intermediate schedule: [2, 15, 11, 1, 31]
+
+Iteration 0: Job 5 with tardiness 44
+Intermediate schedule: [5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 12 with tardiness 0
+Intermediate schedule: [12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 24 with tardiness 0
+Intermediate schedule: [24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 25 with tardiness 0
+Intermediate schedule: [25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 26 with tardiness 0
+Intermediate schedule: [26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 27 with tardiness 0
+Intermediate schedule: [27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 28 with tardiness 0
+Intermediate schedule: [28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 13 with tardiness 0
+Intermediate schedule: [13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 29 with tardiness 0
+Intermediate schedule: [29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 14 with tardiness 10
+Intermediate schedule: [14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 16 with tardiness 46
+Intermediate schedule: [16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 17 with tardiness 0
+Intermediate schedule: [17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 18 with tardiness 0
+Intermediate schedule: [18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 19 with tardiness 0
+Intermediate schedule: [19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 20 with tardiness 0
+Intermediate schedule: [20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 21 with tardiness 0
+Intermediate schedule: [21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 6 with tardiness 0
+Intermediate schedule: [6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 22 with tardiness 0
+Intermediate schedule: [22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 23 with tardiness 0
+Intermediate schedule: [23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 7 with tardiness 0
+Intermediate schedule: [7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 8 with tardiness 0
+Intermediate schedule: [8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 3 with tardiness 0
+Intermediate schedule: [3, 8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 4 with tardiness 0
+Intermediate schedule: [4, 3, 8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 9 with tardiness 0
+Intermediate schedule: [9, 4, 3, 8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 10 with tardiness 0
+Intermediate schedule: [10, 9, 4, 3, 8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Iteration 0: Job 30 with tardiness 0
+Intermediate schedule: [30, 10, 9, 4, 3, 8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+
+Final schedule: [30, 10, 9, 4, 3, 8, 7, 23, 22, 6, 21, 20, 19, 18, 17, 16, 14, 29, 13, 28, 27, 26, 25, 24, 12, 5, 2, 15, 11, 1, 31]
+Maximum tardiness: 0

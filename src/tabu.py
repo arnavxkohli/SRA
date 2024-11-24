@@ -29,13 +29,16 @@ class TabuGraph(Graph):
         return tardiness
 
     def __is_valid_swap(self, schedule: list[int], i: int, j: int) -> bool:
-        schedule[i], schedule[j] = schedule[j], schedule[i]
+        test_schedule = schedule.copy()
+
+        # Precedences should be respected before a swap is performed as well
+        if any(test_schedule.index(src) > test_schedule.index(dst) for src, dst in self.precedences):
+            raise ValueError("Something went wrong, ran into invalid schedule pre-swap")
+
+        test_schedule[i], test_schedule[j] = test_schedule[j], test_schedule[i]
 
         # Check all possible precedences
-        valid_swap = all(schedule.index(src) <= schedule.index(dst) for src, dst in self.precedences)
-
-        schedule[i], schedule[j] = schedule[j], schedule[i]
-        return valid_swap
+        return all(test_schedule.index(src) < test_schedule.index(dst) for src, dst in self.precedences)
 
     def get_interchanges(self, previous_interchange: int | None=None) -> list[tuple[int, int]]:
         interchanges = [(i, i+1) for i in range(self.num_jobs - 1)]
