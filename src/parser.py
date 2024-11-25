@@ -12,4 +12,7 @@ def parse_args():
     parser.add_argument('-s', '--save_output', action='store_true', help='Save output to files')
 
     parser.add_argument('-r', '--run', choices=['tabu', 'lcl', 'both'], default='both', help='Select which algorithm to run: tabu, lcl, or both')
+
+    parser.add_argument('-p', '--plot', action='store_true', help='Plot the results')
+
     return parser.parse_args()

@@ -45,8 +45,12 @@ def main():
             tabu_graph.schedule_jobs(list_length=args.list_length,
                                      max_iterations=args.max_iterations,
                                      tolerance=args.tolerance)
-            tabu_graph.schedule = initial_schedule
-            tabu_graph.plot_schedule()
+            if args.plot:
+                tabu_graph.schedule = initial_schedule
+                tabu_graph.plot_schedule()
+    else:
+        if args.plot:
+            print("[WARNING] Cannot plot results without running Tabu search algorithm, skipped.")
 
 
 if __name__ == "__main__":

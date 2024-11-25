@@ -66,7 +66,7 @@ pip install -r requirements.txt
 Once this is done, the instructions for each parameter are:
 
 ``` bash
-usage: main.py [-h] [-n] [-l LIST_LENGTH] [-m MAX_ITERATIONS] [-t TOLERANCE] [-s] [-r {tabu,lcl,both}]
+usage: main.py [-h] [-n] [-l LIST_LENGTH] [-m MAX_ITERATIONS] [-t TOLERANCE] [-s] [-r {tabu,lcl,both}] [-p]
 
 Scheduling Coursework CLI
 
@@ -83,6 +83,9 @@ options:
   -s, --save_output     Save output to files
   -r, --run {tabu,lcl,both}
                         Select which algorithm to run: tabu, lcl, or both
+  -p, --plot            Plot the results
 ```
 
 When saving the result of the least cost rule schedule, the output will be saved in `out/lcl_schedule.txt`. When saving the result of the tabu search schedule, the output will be saved in `out/tabu_schedule.txt`. If `-s` is not set, the output will be printed to the console. To test the code without using the provided initial schedule, use the `-n` flag.
+
+The `-p` flag plots the results of the varying `tolerance` and `tabu list length` on the best tardiness sum. This flag does nothing if `-r` is set to `lcl`.
