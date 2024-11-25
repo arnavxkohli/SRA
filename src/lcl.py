@@ -33,7 +33,7 @@ class LCLGraph(Graph):
 
         return next_job, min_tardiness
 
-    def schedule_jobs(self, intermediate_iterations: list[int] | None = None) -> None:
+    def schedule_jobs(self) -> None:
         # Initial total completion time
         completion_time = sum(job.processing_time for job in self.jobs)
         iteration = 0
@@ -50,9 +50,8 @@ class LCLGraph(Graph):
             completion_time -= self.jobs[next_job].processing_time
 
             if self.log_file:
-                self.log_file.write(f"Iteration {iteration}: Job {next_job+1} with tardiness {min_tardiness}\n")
-                if intermediate_iterations and iteration in intermediate_iterations:
-                    self.log_file.write(f"Intermediate schedule: {[s+1 for s in self.schedule[::-1]]}\n\n")
+                self.log_file.write(f"Iteration {iteration + 1}: Job {next_job+1} with tardiness {min_tardiness}\n")
+                self.log_file.write(f"Intermediate schedule: {[s+1 for s in self.schedule[::-1]]}\n\n")
 
             # Update L and successors, add to L if all dependencies are met
             self.L.remove(next_job)
@@ -62,8 +61,10 @@ class LCLGraph(Graph):
                     if self.successors[src] == 0:
                         self.L.add(src)
 
+            iteration += 1
+
         # Reverse the schedule to get the correct order
         self.schedule.reverse()
         if self.log_file:
             self.log_file.write(f"Final schedule: {[s+1 for s in self.schedule]}\n")
-            self.log_file.write(f"Maximum tardiness: {min_tardiness}\n")
+            self.log_file.write(f"Maximum tardiness: {max_tardiness}\n")

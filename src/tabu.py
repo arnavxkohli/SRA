@@ -1,5 +1,6 @@
 from collections import deque
 from src.graph import Graph
+import matplotlib.pyplot as plt
 
 
 class TabuGraph(Graph):
@@ -139,3 +140,37 @@ class TabuGraph(Graph):
                 tabu_list.append(swap_pair)
 
         self.schedule = best_schedule
+
+    def plot_schedule(self) -> None:
+        list_lengths, tolerances = [(i * 5) for i in range(1, 201)], [(i) for i in range(1, 101)]
+        initial_schedule = self.schedule.copy()
+
+        list_length_tardiness, tolerance_tardiness = [], []
+
+        for list_length in list_lengths:
+            self.schedule_jobs(list_length=list_length, max_iterations=1000, tolerance=20)
+            list_length_tardiness.append(self.__calculate_tardiness_sum(self.schedule))
+            self.schedule = initial_schedule.copy()
+
+        for tolerance in tolerances:
+            self.schedule_jobs(list_length=20, max_iterations=1000, tolerance=tolerance)
+            tolerance_tardiness.append(self.__calculate_tardiness_sum(self.schedule))
+            self.schedule = initial_schedule.copy()
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(list_lengths, list_length_tardiness)
+        plt.title('Tardiness vs List Length')
+        plt.xlabel('List Length')
+        plt.ylabel('Total Tardiness')
+        plt.tight_layout()
+        plt.savefig('out/tabu_list_length_plot.png')
+        plt.close()
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(tolerances, tolerance_tardiness)
+        plt.title('Tardiness vs Tolerance')
+        plt.xlabel('Tolerance')
+        plt.ylabel('Total Tardiness')
+        plt.tight_layout()
+        plt.savefig('out/tabu_tolerance_plot.png')
+        plt.close()

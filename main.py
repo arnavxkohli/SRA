@@ -2,8 +2,6 @@ from src.lcl import LCLGraph
 from src.tabu import TabuGraph
 from src.parser import parse_args
 
-# Major TODO: Include in your implementation code to generate a valid initial solution (which may not be optimal).
-
 def main():
     args = parse_args()
 
@@ -31,14 +29,12 @@ def main():
         30
     ]
 
-    intermediate_iterations = [0, 1, 4, 6, 10, 14, 18, 22, 26, 29]
-
     if args.run in ['lcl', 'both']:
         with LCLGraph(processing_times=processing_times,
                       due_dates=due_dates,
                       precedences=precedences,
                       log_file_path="out/lcl_schedule.txt" if args.save_output else None) as lcl_graph:
-            lcl_graph.schedule_jobs(intermediate_iterations=intermediate_iterations)
+            lcl_graph.schedule_jobs()
 
     if args.run in ['tabu', 'both']:
         with TabuGraph(processing_times=processing_times,
@@ -49,6 +45,8 @@ def main():
             tabu_graph.schedule_jobs(list_length=args.list_length,
                                      max_iterations=args.max_iterations,
                                      tolerance=args.tolerance)
+            tabu_graph.schedule = initial_schedule
+            tabu_graph.plot_schedule()
 
 
 if __name__ == "__main__":
