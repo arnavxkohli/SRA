@@ -125,6 +125,13 @@ class TabuGraph(Graph):
                     print(text)
                 break
 
+            if iteration < 4:
+                text = f"Iteration {iteration + 1}: New schedule: {[s+1 for s in current_schedule]}, Tardiness: {current_tardiness}\n"
+                if self.log_file:
+                    self.log_file.write(text)
+                else:
+                    print(text)
+
             # Update best schedule if necessary
             if current_tardiness < best_tardiness:
                 text = f"Iteration {iteration + 1}: New best tardiness: {current_tardiness} with schedule: {[s+1 for s in current_schedule]}\n"
