@@ -142,13 +142,13 @@ class TabuGraph(Graph):
         self.schedule = best_schedule
 
     def plot_schedule(self) -> None:
-        list_lengths, tolerances = [(i * 5) for i in range(1, 201)], [(i) for i in range(1, 101)]
+        list_lengths, tolerances = [(i * 5) for i in range(1, 40)], [(i) for i in range(1, 101)]
         initial_schedule = self.schedule.copy()
 
         list_length_tardiness, tolerance_tardiness = [], []
 
         for list_length in list_lengths:
-            self.schedule_jobs(list_length=list_length, max_iterations=1000, tolerance=20)
+            self.schedule_jobs(list_length=list_length, max_iterations=1000, tolerance=10)
             list_length_tardiness.append(self.__calculate_tardiness_sum(self.schedule))
             self.schedule = initial_schedule.copy()
 
