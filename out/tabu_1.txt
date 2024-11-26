@@ -1,4 +1,16 @@
 Tabu search initialized with schedule: [30, 29, 23, 10, 9, 14, 13, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
 List Length: 20, Iterations: 10, Tolerance: 10
 
+Iteration 1: No improvement, current best tardiness: 341, current schedule: [30, 23, 29, 10, 9, 14, 13, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 2: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 29, 9, 14, 13, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 3: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 29, 14, 13, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 4: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 14, 29, 13, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 5: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 14, 13, 29, 12, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 6: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 14, 13, 12, 29, 4, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 7: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 14, 13, 12, 4, 29, 20, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 8: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 14, 13, 12, 4, 20, 29, 22, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Iteration 9: No improvement, current best tardiness: 341, current schedule: [30, 23, 10, 9, 14, 13, 12, 4, 20, 22, 29, 3, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
 Iteration 10: New best tardiness: 335 with schedule: [30, 23, 10, 9, 14, 13, 12, 4, 20, 22, 3, 29, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+
+Best schedule found: [30, 23, 10, 9, 14, 13, 12, 4, 20, 22, 3, 29, 27, 28, 8, 7, 19, 21, 26, 18, 25, 17, 15, 6, 24, 16, 5, 11, 2, 1, 31]
+Best tardiness: 335

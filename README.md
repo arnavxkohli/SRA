@@ -50,6 +50,8 @@ SRA
   - `parser.py`: The file containing the `Parser` class that parses the command line arguments to the application.
   - `tabu.py`: The file containing the `Tabu` class that implements the Tabu Search algorithm.
 
+All of the outputs in the log files are 1-indexed, while the variables in code are meant to be 0-indexed.
+
 ## Running the Code
 
 To run the code, we first need to set-up the virtual environment and install the required packages. This can be done by running the following commands:
@@ -89,3 +91,39 @@ options:
 When saving the result of the least cost rule schedule, the output will be saved in `out/lcl_schedule.txt`. When saving the result of the tabu search schedule, the output will be saved in `out/tabu_schedule.txt`. If `-s` is not set, the output will be printed to the console. To test the code without using the provided initial schedule, use the `-n` flag.
 
 The `-p` flag plots the results of the varying `tolerance` and `tabu list length` on the best tardiness sum. This flag does nothing if `-r` is set to `lcl`.
+
+## Testing the code against the specification
+
+To test [3.1](out/lcl_schedule.txt):
+
+``` bash
+python3 main.py -r lcl -s
+```
+
+To test 3.2:
+
+- For 3.2.1:
+  - [For `list_length = 20`, `max_iterations = 10`, `tolerance = 10`](out/tabu_1.txt):
+
+  ``` bash
+  python3 main.py -r tabu -l 20 -m 10 -t 10 -s # Outputs to out/tabu_schedule.txt
+  ```
+
+  - [For `list_length = 20`, `max_iterations = 100`, `tolerance = 10`](out/tabu_2.txt):
+
+  ``` bash
+  python3 main.py -r tabu -l 20 -m 100 -t 10 -s # Outputs to out/tabu_schedule.txt
+  ```
+
+  - (For `list_length = 20`, `max_iterations = 1000`, `tolerance = 10`)[out/tabu_3.txt]:
+
+  ``` bash
+  python3 main.py -r tabu -l 20 -m 1000 -t 10 -s # Outputs to out/tabu_schedule.txt
+  ```
+
+- For 3.2.2:
+  [To get the best schedule based on the minimum tardiness sum found by the Tabu Search algorithm while varying the `tolerance` and `tabu list length`](out/tabu_best_schedule.txt):
+
+  ``` bash
+  python3 main.py -r tabu -s # Outputs to out/tabu_schedule.txt
+  ```
