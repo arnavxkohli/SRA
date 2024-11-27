@@ -1,13 +1,14 @@
 from src.job import Job
 from src.graph import Graph
+from typing import List, Tuple
 
 
 class LCLGraph(Graph):
 
-    def __init__(self, processing_times: list[int], due_dates: list[int],
-                 precedences: list[tuple[int, int]],
-                 weights: list[int] | None = None,
-                 log_file_path: str | None = None) -> None:
+    def __init__(self, processing_times: List[int], due_dates: List[int],
+                 precedences: List[Tuple[int, int]],
+                 weights: List[int]=None,
+                 log_file_path: str=None) -> None:
         super().__init__(processing_times=processing_times,
                          due_dates=due_dates, precedences=precedences,
                          weights=weights, log_file_path=log_file_path)
@@ -20,7 +21,7 @@ class LCLGraph(Graph):
         # Find jobs with no successors (L)
         self.L = set([i for i in range(self.num_jobs) if self.successors[i] == 0])
 
-    def __find_next_job(self, completion_time: int) -> tuple[int, int]:
+    def __find_next_job(self, completion_time: int) -> Tuple[int, int]:
         min_tardiness = float("inf")
         next_job = None
 

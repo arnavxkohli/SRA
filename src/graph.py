@@ -1,12 +1,13 @@
 from src.job import Job
+from typing import List, Tuple
 
 
 class Graph:
-    def __init__(self, processing_times: list[int], due_dates: list[int],
-                 precedences: list[tuple[int, int]],
-                 schedule: list[int] | None = None,
-                 weights: list[int] | None=None,
-                 log_file_path: str | None=None) -> None:
+    def __init__(self, processing_times: List[int], due_dates: List[int],
+                 precedences: List[Tuple[int, int]],
+                 schedule: List[int] =None,
+                 weights: List[int]=None,
+                 log_file_path: str=None) -> None:
 
         self.jobs = [Job(p, d) for p, d in zip(processing_times, due_dates)]
         if weights is not None:

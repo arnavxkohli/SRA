@@ -1,17 +1,18 @@
 from collections import deque
 from src.graph import Graph
 import matplotlib.pyplot as plt
+from typing import List, Tuple
 
 
 class TabuGraph(Graph):
 
     def __init__(self,
-                 processing_times: list[int],
-                 due_dates: list[int],
-                 precedences: list[tuple[int, int]],
-                 schedule: list[int] | None=None,
-                 weights: list[int] | None=None,
-                 log_file_path: str | None=None) -> None:
+                 processing_times: List[int],
+                 due_dates: List[int],
+                 precedences: List[Tuple[int, int]],
+                 schedule: List[int]=None,
+                 weights: List[int]=None,
+                 log_file_path: str=None) -> None:
         super().__init__(processing_times=processing_times,
                          due_dates=due_dates,
                          precedences=precedences,
@@ -24,7 +25,7 @@ class TabuGraph(Graph):
                 self.schedule = schedule
             self.log_file.write(f"Tabu search initialized with schedule: {[s+1 for s in schedule]}\n")
 
-    def __calculate_tardiness_sum(self, schedule: list[int]) -> int:
+    def __calculate_tardiness_sum(self, schedule: List[int]) -> int:
         completion_time, tardiness = 0, 0
 
         for job in map(lambda job_index: self.jobs[job_index], schedule):
@@ -32,7 +33,7 @@ class TabuGraph(Graph):
             tardiness += job.weight * max(0, completion_time - job.due_date)
         return tardiness
 
-    def generate_initial_schedule(self) -> list[int]:
+    def generate_initial_schedule(self) -> List[int]:
         # Topological Sort
         initial_schedule = []
 
@@ -64,7 +65,7 @@ class TabuGraph(Graph):
 
         return initial_schedule
 
-    def __is_valid_swap(self, schedule: list[int], i: int, j: int) -> bool:
+    def __is_valid_swap(self, schedule: List[int], i: int, j: int) -> bool:
         test_schedule = schedule.copy()
 
         if any(test_schedule.index(src) > test_schedule.index(dst) for src, dst in self.precedences):
@@ -74,7 +75,7 @@ class TabuGraph(Graph):
 
         return all(test_schedule.index(src) < test_schedule.index(dst) for src, dst in self.precedences)
 
-    def get_interchanges(self, previous_interchange: int | None=None) -> list[tuple[int, int]]:
+    def get_interchanges(self, previous_interchange: int=None) -> List[Tuple[int, int]]:
         interchanges = [(i, i+1) for i in range(self.num_jobs - 1)]
 
         return interchanges[previous_interchange+1:] + \
