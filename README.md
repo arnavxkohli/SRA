@@ -102,6 +102,8 @@ python3 main.py -r lcl -s
 
 To test 3.2:
 
+Note that in the [log files](out/), the outputs given are for all of the iterations, keeping the constraints mentioned in the specification in mind. The log files generated with the below commands will just output the iterations where an improvement on the lowest cost (lowest tardiness sum) was made.
+
 - For 3.2.1:
   - [For `list_length = 20`, `max_iterations = 10`, `tolerance = 10`](out/tabu_1.txt):
 

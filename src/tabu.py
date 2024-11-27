@@ -134,17 +134,10 @@ class TabuGraph(Graph):
                     print(text)
                 best_tardiness = current_tardiness
                 best_schedule = current_schedule.copy()
-            else:
-                text = f"Iteration {iteration + 1}: No improvement, current best tardiness: {best_tardiness}, current schedule: {[s+1 for s in current_schedule]}\n"
-                if self.log_file:
-                    self.log_file.write(text)
-                else:
-                    print(text)
 
             # Update tabu list only if the swap is not already in the list (so that no duplicate entries are made)
             if not aspiration_criteria_met or swap_pair not in tabu_list:
                 tabu_list.append(swap_pair)
-
 
         if self.log_file:
             self.log_file.write(f"\nBest schedule found: {[s+1 for s in best_schedule]}\n")
